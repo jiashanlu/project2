@@ -59,7 +59,7 @@ document.addEventListener('DOMContentLoaded', () => { // on DOM loaded
       s[i].onkeyup = () => {
         let y = document.querySelectorAll('.form-control');
         for (i=0; i<y.length; i++) {
-          if (y[i].value.length > 3)
+          if (y[i].value.length > 2)
             x[i].disabled = false;
           else {
             x[i].disabled = true;
