@@ -3,7 +3,6 @@ body
   margin: 10mm 10mm 10mm 10mm;
 }
 
-
 #chat-list
 {
   background-color: #f2f2f2;
@@ -15,7 +14,7 @@ body
   color: black;
 }
 
-#name, #channel, #message
+#name, #message
 {
   margin-bottom: 2mm;
 }

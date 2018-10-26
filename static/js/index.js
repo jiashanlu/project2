@@ -53,11 +53,11 @@ document.addEventListener('DOMContentLoaded', () => { // on DOM loaded
     }
   }
   function enableSubmitButton() { // Enable button only if there is text in the input field
-    let s = document.querySelectorAll('.forms');
+    let s = document.querySelectorAll('.form-control');
     let x = document.querySelectorAll('.submit');
     for (i=0; i<s.length; i++) {
       s[i].onkeyup = () => {
-        let y = document.querySelectorAll('.form-control');
+        let y = document.querySelectorAll('.forms');
         for (i=0; i<y.length; i++) {
           if (y[i].value.length > 2)
             x[i].disabled = false;
@@ -68,6 +68,8 @@ document.addEventListener('DOMContentLoaded', () => { // on DOM loaded
       }
     };
   }
+
+
   function rememberName() { // remember the user if any
     if(!localStorage.getItem('name')) {
       localStorage.setItem('name', '');
