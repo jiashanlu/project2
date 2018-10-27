@@ -2,9 +2,13 @@ document.addEventListener('DOMContentLoaded', () => { // on DOM loaded
 
   // connect to SocketIO
   var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port);
+  var sizeChat = window.innerHeight - document.querySelector('#form-name').offsetHeight - document.querySelector('#form-channel').offsetHeight -70;
 
   // load page
   hideDisable(), enableSubmitButton(), rememberName(), linkchannel(), logout();
+
+  //style
+
 
   // actions
   document.querySelector('#form-channel').onsubmit = () => {// new Channel
@@ -28,10 +32,9 @@ document.addEventListener('DOMContentLoaded', () => { // on DOM loaded
   return false;
   };
 
-  // functions
   function setName() { //setname
     name = localStorage.getItem('name');
-    document.querySelector('#disp-name').innerHTML = `Welcome ${name}! <hr>Create a channel or select an existing one`;// update text in plcajolder
+    document.querySelector('#disp-name').innerHTML = `Welcome ${name}!<br><small>Create a channel or select an existing one</small>`;// update text in plcajolder
     document.querySelector('#name').placeholder = "Update your name";
     let h = document.querySelectorAll('.hide');// activate hidded elements
     for (i=0; i<h.length; i++) {
@@ -68,8 +71,6 @@ document.addEventListener('DOMContentLoaded', () => { // on DOM loaded
       }
     };
   }
-
-
   function rememberName() { // remember the user if any
     if(!localStorage.getItem('name')) {
       localStorage.setItem('name', '');
