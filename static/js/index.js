@@ -11,11 +11,12 @@ document.addEventListener('DOMContentLoaded', () => { // on DOM loaded
 
 
   // actions
-  document.querySelector('#form-channel').onsubmit = () => {// new Channel
+  document.querySelector('#form-channel').onsubmit = async () => {// new Channel
     var channel = document.querySelector('#channel').value; // get channel
-    localStorage.setItem('channel', channel);
-    socket.emit('newChannel', {'channel': localStorage.getItem('channel'), 'name':localStorage.getItem('name')});
-    load_channel(localStorage.getItem('channel'));
+    socket.emit('newChannel', {'channel': channel, 'name':localStorage.getItem('name')});
+    await load_channel(channel);
+    document.querySelector('#channel').value = "";
+    return false;
   };
   document.querySelector('#form-name').onsubmit = () => { // new name
     var name = document.querySelector('#name').value;   // get the name
@@ -23,7 +24,7 @@ document.addEventListener('DOMContentLoaded', () => { // on DOM loaded
     socket.on('connect', () => {
       socket.emit('newName', {'name': localStorage.getItem('name')});
     });
-    document.querySelector('#name').value = "";   // emit name
+    document.querySelector('#name').value = "";
   };
   document.querySelector('#chat-form').onsubmit = () => { // new message
   var message = document.querySelector('#message').value;
@@ -98,10 +99,22 @@ document.addEventListener('DOMContentLoaded', () => { // on DOM loaded
     //  history.pushState({'title': 'Jiashan Instant Messagery', 'text': ''}, '/', '/');
     };
   }
-  function load_channel(cha) { //load channel
-    localStorage.setItem('channel', cha); // set localstorage
-    socket.emit('joinRoom', {'channel': localStorage.getItem('channel'), 'name':localStorage.getItem('name')}); // broadcast join room
+  async function load_channel(cha) { //load channel
+    socket.emit('joinRoom', {'channel': cha, 'name':localStorage.getItem('name')}); // broadcast join room
+    localStorage.setItem('channel', cha);
+    try {
+      document.querySelectorAll('.list-group-item-success').forEach(link => {
+        link.classList.replace('list-group-item-success','list-group-item-light');
+      });
+      document.querySelector(`[data-page="${localStorage.getItem('channel')}"]`).classList.replace('list-group-item-light','list-group-item-success');
+    }
+    catch {
+      return false;
+    }
     socket.once('past_messages', data => { //retrieve message history
+      document.querySelectorAll('.msg').forEach(msg => {
+        msg.remove();
+      });
       for (i=0; i<data['messages'].length; i++){
         let b = document.createElement('p');
         try {
@@ -120,18 +133,16 @@ document.addEventListener('DOMContentLoaded', () => { // on DOM loaded
         document.querySelector("#content").append(b);
      };
     });
-    if (document.querySelector('.nav-link') === null || document.querySelector(`[data-page="${localStorage.getItem('channel')}"]`) === null) // selected channel in green
-      return false;
-    document.querySelector(`[data-page="${localStorage.getItem('channel')}"]`).classList.replace('list-group-item-light','list-group-item-success');
+    return false;
   }
   function linkchannel() { // create action to load channel on click (A affiner)
     document.querySelectorAll('.nav-link').forEach(link => {
         link.onclick = () => {
             load_channel(link.dataset.page);
+            return false;
         };
     });
   };
-
 // SocketIO broadcasts
   socket.on('broadChannel', data => { // broadcast new chanel
     let a = document.createElement('a');
@@ -142,8 +153,17 @@ document.addEventListener('DOMContentLoaded', () => { // on DOM loaded
     document.querySelector('#channel-list').append(a);
   });
   socket.on('joined', data => { // broadcast someone join the room
-    document.querySelector("#head_chat").innerHTML = data;
-    });
+      let b = document.createElement('p');
+      b.innerHTML = data.message;
+      b.className="anim";
+      b.style.animationPlayState = 'running';
+      document.querySelector("#head_chat").append(b);
+      document.querySelector("#head_chat").addEventListener('animationend', () =>  {
+        document.querySelectorAll(".anim").forEach(anim => {
+          anim.remove();
+        });
+      });
+  });
   socket.on('roomMessage', data => { // broadcast new message
     let b = document.createElement('p'); //create new element
     try {

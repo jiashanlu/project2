@@ -10,7 +10,7 @@ app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
 socketio = SocketIO(app)
 Channel_list = {"list":[{"name": '',"channels":[]}]}
 messages = [{"channel":'',"messages":[{"message":'', "timestamp":'', "name":''}]}]
-
+rooms = []
 
 @app.route("/")
 def index():
@@ -22,8 +22,11 @@ def name(data):
     username = data['name']
     channel = data['channel']
     pastMsg =[]
+    for room in rooms:
+        leave_room(room)
     join_room(channel)
-    emit("joined", username + ' has entered the room ' + channel, room=channel)
+    rooms.append(channel)
+    emit("joined",{'message': username + ' has entered the room ' + channel, 'channel':channel } , room=channel, broadcast=True)
     for m in messages:
         if (m["channel"] == channel):
             pastMsg.append(m)

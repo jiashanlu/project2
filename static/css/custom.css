@@ -88,3 +88,22 @@ flex-grow: 1;
   text-align: right;
   color: green;
 }
+@keyframes joinRoom{
+  0% {
+    opacity: 1;
+    color: blue;
+  }
+  50% {
+    color: black;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+.anim
+{
+  animation-name: joinRoom;
+  animation-duration: 5s;
+  animation-fill-mode: forwards;
+  animation-play-state: paused;
+}
