@@ -100,6 +100,7 @@ document.addEventListener('DOMContentLoaded', () => { // on DOM loaded
     };
   }
   async function load_channel(cha) { //load channel
+    document.querySelector("#content").innerHTML ="";
     socket.emit('joinRoom', {'channel': cha, 'name':localStorage.getItem('name')}); // broadcast join room
     localStorage.setItem('channel', cha);
     try {
